@@ -9,7 +9,6 @@ set -e
 set -x
 
 rm -rf _gen
-mkdir -p _gen/if
 
 D=./if
 
@@ -20,7 +19,6 @@ THRIFT_FILES="
 for f in $THRIFT_FILES;
 do
   echo "=> THRIFT: generate: $f";
-  cp -rfv $f _gen/if/
   thrift -r -gen py -o _gen $f;
   thrift -r -gen go:package_prefix=blackbox/gen/ -o _gen $f;
 done
