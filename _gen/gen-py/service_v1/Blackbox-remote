@@ -26,6 +26,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('Functions:')
     print('  void ping()')
     print('  string get_version()')
+    print('  void log_location(Location loc)')
     print('  string get_name()')
     print('')
     sys.exit(0)
@@ -117,6 +118,12 @@ elif cmd == 'get_version':
         print('get_version requires 0 args')
         sys.exit(1)
     pp.pprint(client.get_version())
+
+elif cmd == 'log_location':
+    if len(args) != 1:
+        print('log_location requires 1 args')
+        sys.exit(1)
+    pp.pprint(client.log_location(eval(args[0]),))
 
 elif cmd == 'get_name':
     if len(args) != 0:

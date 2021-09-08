@@ -26,6 +26,7 @@ func Usage() {
   fmt.Fprintln(os.Stderr, "\nFunctions:")
   fmt.Fprintln(os.Stderr, "  void ping()")
   fmt.Fprintln(os.Stderr, "  string get_version()")
+  fmt.Fprintln(os.Stderr, "  void log_location(Location loc)")
   fmt.Fprintln(os.Stderr, "  string get_name()")
   fmt.Fprintln(os.Stderr)
   os.Exit(0)
@@ -162,6 +163,31 @@ func main() {
       flag.Usage()
     }
     fmt.Print(client.GetVersion(context.Background()))
+    fmt.Print("\n")
+    break
+  case "log_location":
+    if flag.NArg() - 1 != 1 {
+      fmt.Fprintln(os.Stderr, "LogLocation requires 1 args")
+      flag.Usage()
+    }
+    arg10 := flag.Arg(1)
+    mbTrans11 := thrift.NewTMemoryBufferLen(len(arg10))
+    defer mbTrans11.Close()
+    _, err12 := mbTrans11.WriteString(arg10)
+    if err12 != nil {
+      Usage()
+      return
+    }
+    factory13 := thrift.NewTJSONProtocolFactory()
+    jsProt14 := factory13.GetProtocol(mbTrans11)
+    argvalue0 := service_v1.NewLocation()
+    err15 := argvalue0.Read(context.Background(), jsProt14)
+    if err15 != nil {
+      Usage()
+      return
+    }
+    value0 := argvalue0
+    fmt.Print(client.LogLocation(context.Background(), value0))
     fmt.Print("\n")
     break
   case "get_name":

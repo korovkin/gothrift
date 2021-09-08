@@ -41,6 +41,11 @@ func (p *BlackboxHandler) GetName(ctx context.Context) (ver string, err error) {
 	return "blackbox", nil
 }
 
+func (p *BlackboxHandler) LogLocation(ctx context.Context, loc *service_v1.Location) (_err error) {
+	log.Println("received LogLocation - ", gotils.ToJSONString(loc))
+	return nil
+}
+
 func runServer(transportFactory thrift.TTransportFactory, protocolFactory thrift.TProtocolFactory, addr string) error {
 	var transport thrift.TServerTransport
 	var err error
@@ -100,6 +105,14 @@ func runClient(
 	ver, err = client.GetVersion(ctx)
 	name, err = client.GetName(ctx)
 	log.Println("get_version() - ", ver, name)
+
+	// log location:
+	err = client.LogLocation(ctx, &service_v1.Location{
+		TimestampUnixSec: float64(time.Now().Unix()),
+		LongitudeDegrees: -122.0,
+		LatitudeDegrees:  33.0,
+	})
+	log.Println("LogLocation()")
 
 	return err
 }
