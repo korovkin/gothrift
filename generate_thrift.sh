@@ -2,8 +2,8 @@
 
 # you will need to install the thrift compiler from: `brew install thrift`
 
-# thrift --version
-# Thrift version 0.12.0
+# $ thrift --version
+# Thrift version 0.14.2
 
 set -e
 set -x
