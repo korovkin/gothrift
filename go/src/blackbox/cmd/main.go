@@ -14,12 +14,13 @@ import (
 	"blackbox/gen/service_v1"
 )
 
-var VERSION string = "000.001.001"
+var VERSION string = "001.001.001"
 
 //////////////////////////////////////////
 // Blackbox server handler: //////////////
 //////////////////////////////////////////
 type BlackboxHandler struct {
+	C int `json:"c"`
 }
 
 func NewBlackboxHandler() *BlackboxHandler {
@@ -32,7 +33,8 @@ func (p *BlackboxHandler) Ping(ctx context.Context) (err error) {
 }
 
 func (p *BlackboxHandler) GetVersion(ctx context.Context) (ver string, err error) {
-	log.Println("received GetVersion()")
+	log.Println("received GetVersion()", p.C)
+	p.C += 1
 	return VERSION, nil
 }
 
@@ -101,14 +103,16 @@ func runClient(
 	// get version:
 	var ver string
 	var name string
-	log.Println("get_version() - start")
+	log.Println("GetVersion() - start")
 	ver, err = client.GetVersion(ctx)
+	gotils.CheckFatal(err)
 	name, err = client.GetName(ctx)
-	log.Println("get_version() - ", ver, name)
+	gotils.CheckFatal(err)
+	log.Println("GetVersion() - ", ver, name)
 
 	// log location:
 	err = client.LogLocation(ctx, &service_v1.Location{
-		TimestampUnixSec: float64(time.Now().Unix()),
+		TimestampUnixSec: float64(time.Now().Local().UnixNano()) / 1000000000.0,
 		LongitudeDegrees: -122.0,
 		LatitudeDegrees:  33.0,
 	})
